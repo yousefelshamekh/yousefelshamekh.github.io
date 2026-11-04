@@ -233,12 +233,7 @@ code,.code{font-family:var(--f-code);font-size:.9em;direction:ltr;unicode-bidi:i
 .chap-card h3{font-size:20px}
 .chap-card .en2{font-family:var(--f-num);font-size:13.5px;letter-spacing:.12em;color:var(--ink-3);text-transform:uppercase;direction:ltr;text-align:right}
 .chap-card .meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
-/* fixed placement: the number owns column 1, text column 2, and the pills + bar span the card,
-   so a finished chapter (more pills) can never widen column 1 and push the title out */
-.chap-card .big{grid-column:1;grid-row:1/4;align-self:start}
-.chap-card h3,.chap-card .en2,.chap-card .weight{grid-column:2;min-width:0}
-.chap-card .weight{flex-wrap:wrap}
-.chap-card .meta,.chap-card .bar{grid-column:1/-1}
+.chap-card .meta,.chap-card .bar{grid-column:1/-1}.chap-card h3,.chap-card .en2{min-width:0;overflow-wrap:anywhere}
 .bar{height:6px;background:var(--hair);border-radius:99px;overflow:hidden;margin-top:14px;grid-column:1/-1}
 .bar i{display:block;height:100%;background:var(--red);border-radius:99px;width:0;transition:width .9s cubic-bezier(.2,.8,.2,1)}
 .bar i.full{background:var(--ok)}
@@ -729,16 +724,17 @@ bdi.rtl,.nx bdi{direction:rtl;unicode-bidi:isolate}
   --f-num:"Bebas","Barlow C","Oswald","Arial Narrow",sans-serif;
 }
 body{font-size:17px;font-weight:400;line-height:1.9}
-h1,h2,.lead,.op-in h1,.l-head h1,.page-h h1,.lsec-h h2,.sec-h h2,.h2 h2,.res-hero h1{font-family:var(--f-zain);font-weight:800;letter-spacing:0}
+/* ZAIN only for titles: page / chapter / lesson / card names */
+h1,.op-in h1,.l-head h1,.page-h h1,.res-hero h1,.lsec-h h2,.chap-card h3,.hcard h3,.exam-card h3,.lesson-row h3,.part-h h2{font-family:var(--f-zain);font-weight:800;letter-spacing:0}
 h1{line-height:1.25}
-h2{line-height:1.3}
-h3,h4,.next-up b,.btn,.tab{font-family:var(--f-head)}
-.lead{font-weight:800;line-height:1.6}
-.intro h1,.brand b{letter-spacing:.04em}
+/* sub-headings: Alexandria */
+h2,.sec-h h2,.h2 h2,h4,.next-up b,.btn,.tab,.note b.t,.viz-top .ttl{font-family:var(--f-head)}
+h2,.sec-h h2,.h2 h2{font-weight:700;letter-spacing:0;line-height:1.35}
+.lead{font-family:var(--f-body);font-weight:500;line-height:1.7}
+.intro h1,.brand b{font-family:var(--f-num);letter-spacing:.04em}
 .num,.op-num,.big,.bignum{letter-spacing:.02em}
 .prose p,.note p,.fb{font-family:var(--f-body)}
 .stem,.written .stem,.opt .v{font-family:"JostL",system-ui,sans-serif}
-.note b.t{font-family:var(--f-head);font-weight:700}
 /* ---- written grader ---- */
 .wq .stem{font-size:16px;line-height:1.7}
 .wq .stem .qn{font-family:var(--f-num);font-size:20px;color:var(--red);margin-inline-end:8px}
@@ -764,7 +760,7 @@ h3,h4,.next-up b,.btn,.tab{font-family:var(--f-head)}
 .wres.mid{background:var(--mustard-soft);border-color:var(--mustard)}
 .wres.no{background:var(--red-soft);border-color:var(--red)}
 .wres .vh{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-.wres .vh b{font-family:var(--f-zain);font-weight:800;font-size:22px}
+.wres .vh b{font-family:var(--f-head);font-weight:700;font-size:20px}
 .wres .sc{font-family:var(--f-num);font-size:30px;line-height:1;direction:ltr}
 .wres .bar{height:8px;border-radius:99px;background:var(--hair);overflow:hidden;margin:10px 0 4px}
 .wres .bar i{display:block;height:100%;background:var(--ok);border-radius:99px;width:0;transition:width .8s cubic-bezier(.2,.8,.2,1)}
@@ -3263,7 +3259,7 @@ VIZ.matfam=function(n,o){
     else if(cur===1){for(let i=0;i<7;i++)for(let j=0;j<4;j++){const big=(i+j)%2===0;S('circle',{cx:35+i*45,cy:35+j*50,r:big?19:10,class:big?'tint s-fg':'mus','stroke-width':1.5},svg);S('text',{x:35+i*45,y:40+j*50,'text-anchor':'middle',text:big?'−':'+',class:big?'fg':'onred','font-size':big?18:12},svg)}}
     else{for(let c=0;c<3;c++){let d='';for(let i=0;i<=12;i++){const x=20+i*25,y=45+c*65+(i%2?16:-16);d+=(i?'L':'M')+x+' '+y}S('path',{d,class:'nof s-fg','stroke-width':3,'stroke-linejoin':'round'},svg);
       for(let i=0;i<=12;i+=2)S('circle',{cx:20+i*25,cy:45+c*65-16,r:6,class:'mus'},svg)}}
-    $('.pl',v.body).innerHTML=`<div style="font-family:var(--f-zain);font-weight:800;font-size:22px">${f.ar}</div><div style="direction:ltr;text-align:left;color:var(--s-dim);font-size:13.5px;margin:2px 0 8px">${f.ex}</div>${f.p.map(x=>`<div style="direction:ltr;text-align:left;font-size:14px;padding:4px 0;border-top:1px solid var(--stage-hair)">${x}</div>`).join('')}`;
+    $('.pl',v.body).innerHTML=`<div style="font-family:var(--f-head);font-weight:700;font-size:20px">${f.ar}</div><div style="direction:ltr;text-align:left;color:var(--s-dim);font-size:13.5px;margin:2px 0 8px">${f.ex}</div>${f.p.map(x=>`<div style="direction:ltr;text-align:left;font-size:14px;padding:4px 0;border-top:1px solid var(--stage-hair)">${x}</div>`).join('')}`;
     say(v.cap,f.c);if(!RM)gsap.from($$('*',svg).slice(0,40),{opacity:0,scale:.6,transformOrigin:'center',duration:.5,stagger:.01})}
   vloop(n,dt=>{parts.forEach(p=>{p.x+=p.vx*dt;p.y+=p.vy*dt;if(p.x<0||p.x>340)p.vx*=-1;if(p.y<0||p.y>220)p.vy*=-1;p.e.setAttribute('cx',p.x.toFixed(1));p.e.setAttribute('cy',p.y.toFixed(1))})});
   bindChips(v.top,i=>{cur=i;draw()});draw()};
@@ -3552,7 +3548,7 @@ VIZ.thermistor=function(n,o){
   const svg=svgIn(v.body,440,240);const ctl=vctl(v.body);const rd=vreads(v.body,[{k:'r',l:'R (10 kΩ NTC)',hot:1},{k:'a',l:'SENSITIVITY'}]);let cur=0,T=25;
   const X=t=>50+t/100*370,Yk=r=>210-r/32*185;
   const ntc=t=>10*Math.exp(3950*(1/(t+273.15)-1/298.15)),ptc=t=>t<60?2+t*.02:3.2+Math.pow(t-60,2)*.03,rtd=t=>10*(1+.00385*(t-25));
-  function draw(){svg.innerHTML='';axes(svg,{x0:50,y0:210,w:380,h:195,xl:'T (°C)',yl:'R (kΩ)'});[0,20,40,60,80,100].forEach(t=>S('text',{x:X(t),y:228,'text-anchor':'middle',class:'dim',text:t,'font-size':11},svg));
+  function draw(){svg.innerHTML='';axes(svg,{x0:50,y0:210,w:380,h:195,yl:'R (kΩ)'});S('text',{x:430,y:202,'text-anchor':'end',class:'dim',text:'T (°C)','font-size':12},svg);[0,20,40,60,80,100].forEach(t=>S('text',{x:X(t),y:228,'text-anchor':'middle',class:'dim',text:t,'font-size':11},svg));
     const path=(f,cls,w)=>{let d='';for(let t=0;t<=100;t+=2)d+=(t?'L':'M')+X(t).toFixed(1)+' '+Math.max(15,Yk(f(t))).toFixed(1);S('path',{d,class:'nof '+cls,'stroke-width':w},svg)};
     if(cur!==1)path(ntc,'s-red',3.2);if(cur!==0)path(ptc,'s-mus',3.2);if(cur===2)path(rtd,'s-dim',2);
     const f=cur===1?ptc:ntc;S('circle',{cx:X(T),cy:Math.max(15,Yk(f(T))),r:7,class:'fg'},svg);
