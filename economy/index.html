@@ -236,13 +236,15 @@ code,.code{font-family:var(--f-code);font-size:.9em;direction:ltr;unicode-bidi:i
 .chap-card .big{font-family:var(--f-num);font-weight:600;font-size:76px;line-height:.8;grid-row:span 3;direction:ltr}
 .chap-card h3{font-size:20px}
 .chap-card .en2{font-family:var(--f-num);font-size:13.5px;letter-spacing:.12em;color:var(--ink-3);text-transform:uppercase;direction:ltr;text-align:right}
-.chap-card .meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.chap-card .meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;grid-column:1/-1}
+.chap-card .big{grid-column:1;grid-row:1/span 3}
+.chap-card h3,.chap-card .en2,.chap-card .weight{grid-column:2;min-width:0;overflow-wrap:anywhere}
 .bar{height:6px;background:var(--hair);border-radius:99px;overflow:hidden;margin-top:14px;grid-column:1/-1}
 .bar i{display:block;height:100%;background:var(--red);border-radius:99px;width:0;transition:width .9s cubic-bezier(.2,.8,.2,1)}
 .bar i.full{background:var(--ok)}
 .midrule{display:flex;align-items:center;gap:14px;color:var(--red);font-family:var(--f-head);font-weight:700;padding:18px 0 4px}
 .midrule::before,.midrule::after{content:"";flex:1;border-top:3px dashed var(--red);opacity:.7}
-.weight{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--ink-3);margin-top:6px}
+.weight{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;font-size:12.5px;color:var(--ink-3);margin-top:6px}
 .weight .dots{display:flex;gap:3px;direction:ltr}
 .weight .dots i{width:7px;height:14px;border-radius:3px;background:var(--hair)}
 .weight .dots i.on{background:var(--mustard)}
@@ -703,6 +705,7 @@ h3,h4,.intro .sub,.viz-top .ttl,.note b.t,table.t th,.lesson-nav a b,.next-up b,
 .stem,.opt .v{font-family:"Jost","Tajawal",system-ui,sans-serif}
 .intro h1,.brand b{letter-spacing:.03em;font-weight:400}
 .num{letter-spacing:.02em}
+.part-h .k{white-space:nowrap}
 .prose code,.lead code,.note p code,.steps li code,.fb code,.cap code,table.t td code,.rv code{display:inline-block;white-space:normal;max-width:100%;vertical-align:baseline;line-height:1.55;overflow-wrap:anywhere}
 </style>
 
