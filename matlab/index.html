@@ -232,6 +232,12 @@ code,.code{font-family:var(--f-code);font-size:.9em;direction:ltr;unicode-bidi:i
 .chap-card h3{font-size:20px}
 .chap-card .en2{font-family:var(--f-num);font-size:13.5px;letter-spacing:.12em;color:var(--ink-3);text-transform:uppercase;direction:ltr;text-align:right}
 .chap-card .meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+/* fixed placement: the number owns column 1, text column 2, and the pills + bar span the card,
+   so a finished chapter (more pills) can never widen column 1 and push the title out */
+.chap-card .big{grid-column:1;grid-row:1/4;align-self:start}
+.chap-card h3,.chap-card .en2,.chap-card .weight{grid-column:2;min-width:0}
+.chap-card .weight{flex-wrap:wrap}
+.chap-card .meta,.chap-card .bar{grid-column:1/-1}
 .bar{height:6px;background:var(--hair);border-radius:99px;overflow:hidden;margin-top:14px;grid-column:1/-1}
 .bar i{display:block;height:100%;background:var(--red);border-radius:99px;width:0;transition:width .9s cubic-bezier(.2,.8,.2,1)}
 .bar i.full{background:var(--ok)}
