@@ -6171,6 +6171,15 @@ function secLines(sec,cav,fill,model){const k=JSON.stringify([sec,cav,fill,model
 .lead{font-family:var(--f-body)!important;font-weight:500!important;font-size:clamp(18px,2.1vw,22px)!important;line-height:1.75!important}
 .intro .sub{font-family:var(--f-body)!important;font-weight:500!important}
 .t3d-legend .lg{white-space:normal}
+.t3d-label.num{padding:0;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-family:var(--f-num);font-size:15px;line-height:1;background:var(--ink);color:var(--paper);border:2px solid var(--card);text-align:center}
+.t3d-label.num.red{background:var(--s-red);color:var(--s-onred)}.t3d-label.num.ok{background:var(--s-ok);color:#fff}
+.t3d-key{display:flex;flex-wrap:wrap;gap:8px 16px;padding:12px 16px 4px;border-top:1px solid var(--stage-hair);font-family:var(--f-lab);font-size:13px;font-weight:600;color:var(--s-fg)}
+.t3d-key:empty{display:none}
+.t3d-key .ki{display:inline-flex;align-items:flex-start;gap:7px;min-width:0;max-width:100%}
+.t3d-key .ki>b{flex:none;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-family:var(--f-num);font-weight:400;font-size:14px;background:var(--ink);color:var(--paper)}
+.t3d-key .ki.red>b{background:var(--s-red);color:var(--s-onred)}.t3d-key .ki.ok>b{background:var(--s-ok);color:#fff}
+.t3d-key .ki small{display:block;font-family:var(--f-ui);font-weight:500;font-size:11.5px;color:var(--s-dim)}
+.t3d-key .ki span{direction:ltr;text-align:left;overflow-wrap:anywhere}
 `;document.head.appendChild(st)})();
 
 const TH3=()=>T3.THREE;
@@ -6334,6 +6343,12 @@ function slabShape(top,bot,x0,x1,n){const T=TH3();const sh=new T.Shape();for(let
   const g=new T.ExtrudeGeometry(sh,{depth:SEC.depth,bevelEnabled:false,curveSegments:1,steps:1});g.translate(0,0,-SEC.depth/2);return g}
 function frontLine(fn,x0,x1,color,n=100){const T=TH3();const pts=[];for(let i=0;i<=n;i++){const x=x0+(x1-x0)*i/n;pts.push(new T.Vector3(x,fn(x),SEC.depth/2+.012))}const l=new T.Line(new T.BufferGeometry().setFromPoints(pts),new T.LineBasicMaterial({color}));l.renderOrder=8;return l}
 
+
+/* labels → numbered dots on the model + a key under the stage (nothing covers the drawing) */
+function numbered(ctx){if(!ctx)return ctx;const lab=ctx.label,clr=ctx.clearLabels;const leg=$('.t3d-legend',ctx.n);const key=document.createElement('div');key.className='t3d-key';leg.parentNode.insertBefore(key,leg);let k=0;
+  ctx.label=(pos,html,cls,o)=>{k++;key.insertAdjacentHTML('beforeend',`<span class="ki ${cls||''}"><b>${k}</b><span>${html}</span></span>`);return lab(pos,String(k),((cls||'')+' num').trim(),Object.assign({near:true},o||{}))};
+  ctx.clearLabels=()=>{k=0;key.innerHTML='';clr()};return ctx}
+
 /* =================== VIZ: stock trays =================== */
 VIZ.dtray=function(n,o){
   const V0={az:.55,el:.8,dist:43,tx:0,ty:.2,tz:.6};
@@ -6378,7 +6393,7 @@ VIZ.dtray=function(n,o){
     const bead=castLineTray(true);const T=TH3();const gg=new T.Group();gg.add(ctx.get('fx'));const tb=tube3(bead,.11,C3.compound);gg.add(tb);ctx.set('fx',gg);tb.scale.set(1,1,1);
     ctx.legend(['metal','removed','compound'],'tray');};
   function castLineTray(trimmed){const P2=[];for(let i=0;i<=60;i++){const f=-1.6+3.2*i/60,ap=Math.abs(f);const tr=trimmed?.45*sstep(.7,1.0,ap)*(1-sstep(1.45,1.6,ap)):0;const bend=.55*sstep(.9,1.4,ap);const [x,z]=archAt(TRA,f,1.25+bend);P2.push([x,.6+.95-tr,z])}return P2}
-  shell3d(n,{title:o.title||'الـ Stock tray: الأجزاء والأنواع والتعديل',view:V0,chips:['الأجزاء (upper)','Lower tray','Edentulous','Dentate','Perforated','تعديل التراي'],states:st,play,playLabel:'شغّل الحركة',minDist:10,maxDist:60});
+  numbered(shell3d(n,{title:o.title||'الـ Stock tray: الأجزاء والأنواع والتعديل',view:V0,chips:['الأجزاء (upper)','Lower tray','Edentulous','Dentate','Perforated','تعديل التراي'],states:st,play,playLabel:'شغّل الحركة',minDist:10,maxDist:60}));
 };
 
 /* =================== VIZ: special tray construction on the primary cast =================== */
@@ -6425,7 +6440,7 @@ VIZ.dspacer=function(n,o){
     ctx.say('شلنا الشمع: جوه التراي بقى فيه **even space** للمادة، والتراي ساند على الكاست عند الـ stoppers بس.');
     await ctx.tween(1100,k=>{tr.position.y=h.position.y=3.2*(1-easeIO(k))});if(t.dead)return;ctx.badge('Even space','ok');
     ctx.legend(['acrylic','stopper','stone'],'cast');ctx.label([-2.2,maxF(-2.2,-1).h+.45,-1],L2('Even space for material','مسافة متساوية للمادة'),'ok')};
-  shell3d(n,{title:o.title||'الـ Special tray على الـ primary cast',view:V0,chips:['Spacer line','Spacer + stoppers','الـ resin فوقهم','من غير spacer','Bite blocks'],states:st,play,playLabel:'شغّل الحركة',minDist:10,maxDist:60});
+  numbered(shell3d(n,{title:o.title||'الـ Special tray على الـ primary cast',view:V0,chips:['Spacer line','Spacer + stoppers','الـ resin فوقهم','من غير spacer','Bite blocks'],states:st,play,playLabel:'شغّل الحركة',minDist:10,maxDist:60}));
 };
 
 /* =================== VIZ: supporting tissues zones + selective spacer =================== */
@@ -6454,7 +6469,7 @@ VIZ.dzones=function(n,o){
      ctx.label(P(mxF,2.0,-2.4,.03),'No relief → max pressure','ok');ctx.label(P(mxF,-3.7,.3,.18),'0.5 mm → reduced pressure');ctx.label(P(mxF,0,-3.4,.3),'1 mm → no pressure','red');
      ctx.say('ده الـ **selective pressure tray**: الـ spacer **مش uniform**. **مفيش relief** على الـ primary، **0.5 mm** على الـ secondary، و **1 mm** على الـ relief areas.')},
   ];
-  shell3d(n,{title:o.title||'الـ Supporting tissues على الكاست',view:VM,chips:['Maxilla','Mandible','Selective tray spacer'],states:st,minDist:10,maxDist:60});
+  numbered(shell3d(n,{title:o.title||'الـ Supporting tissues على الكاست',view:VM,chips:['Maxilla','Mandible','Selective tray spacer'],states:st,minDist:10,maxDist:60}));
 };
 
 /* =================== VIZ: impression techniques (coronal section) =================== */
@@ -6525,7 +6540,7 @@ VIZ.dtech=function(n,o){
     else{ctx.badge('Rest ✓','ok');if(!await ctx.wait(900))return;arrows(ctx,[[[-1.5,-2.4,0],1.0,0x2e8b57],[[1.5,-2.4,0],1.0,0x2e8b57]]);ctx.say('**During function**: الضغط رايح على الـ **primary stress-bearing areas**، والأماكن الحساسة **relieved**.');
       await ctx.tween(900,e=>{S.baseDy=.03*easeIO(e);draw(ctx)});if(t.dead)return;ctx.badge('Stable at rest & function','ok');ctx.say('النتيجة: **stable at rest and function** — أحسن ما في الطريقتين.')}
   };
-  shell3d(n,{title:o.title||'تقنيات الـ final impression في مقطع',view:V0,chips:['Mucostatic','Muco-compressive','Selective pressure','Digital'],states:st,play,playLabel:'Rest ⇄ Function',start:o.start||0,minDist:10,maxDist:60});
+  numbered(shell3d(n,{title:o.title||'تقنيات الـ final impression في مقطع',view:V0,chips:['Mucostatic','Muco-compressive','Selective pressure','Digital'],states:st,play,playLabel:'Rest ⇄ Function',start:o.start||0,minDist:10,maxDist:60}));
 };
 
 /* ---------------- HERO ---------------- */
