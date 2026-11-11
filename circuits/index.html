@@ -1084,18 +1084,18 @@ const series={k:'KVL  ·  VDR',title:'الـ series: تيار واحد، وال�
 
 /* ---------- parallel circuit with meters (ميد 2021 س23–25) ---------- */
 const parEls=(V,r1,r2,r3)=>[E('E','p','n',[[0,0],[0,3]],V,'Vs',V+' V',-1),{id:'AM',t:'A',n:['p','t1'],p:[[0,0],[1.8,0]]},
-  W('t12','t1','t2',[[1.8,0],[3,0]]),W('t23','t2','t3',[[3,0],[4.4,0]]),W('t34','t3','t4',[[4.4,0],[5.8,0]]),W('t45','t4','t5',[[5.8,0],[7,0]]),
-  R('R1','t2','b2',[[3,0],[3,3]],r1,'R1',CK0(r1)),R('R2','t3','b3',[[4.4,0],[4.4,3]],r2,'R2',CK0(r2)),R('R3','t4','b4',[[5.8,0],[5.8,3]],r3,'R3',CK0(r3)),
-  {id:'VM',t:'Vm',n:['t5','b5'],p:[[7,0],[7,3]]},W('b54','b5','b4',[[7,3],[5.8,3]]),W('b43','b4','b3',[[5.8,3],[4.4,3]]),W('b32','b3','b2',[[4.4,3],[3,3]]),W('b2n','b2','n',[[3,3],[0,3]])];
+  W('t12','t1','t2',[[1.8,0],[3.2,0]]),W('t23','t2','t3',[[3.2,0],[5,0]]),W('t34','t3','t4',[[5,0],[6.8,0]]),W('t45','t4','t5',[[6.8,0],[8.4,0]]),
+  R('R1','t2','b2',[[3.2,0],[3.2,3]],r1,'R1',CK0(r1)),R('R2','t3','b3',[[5,0],[5,3]],r2,'R2',CK0(r2)),R('R3','t4','b4',[[6.8,0],[6.8,3]],r3,'R3',CK0(r3)),
+  {id:'VM',t:'Vm',n:['t5','b5'],p:[[8.4,0],[8.4,3]]},W('b54','b5','b4',[[8.4,3],[6.8,3]]),W('b43','b4','b3',[[6.8,3],[5,3]]),W('b32','b3','b2',[[5,3],[3.2,3]]),W('b2n','b2','n',[[3.2,3],[0,3]])];
 const parallel={k:'KCL  ·  CDR',title:'الـ parallel: جهد واحد، والتيار بيتقسم',presets:[
-  {name:'ميد 2021: 1k · 560 · 330',els:parEls(6,1000,560,330),meters:[{id:'AM'},{id:'VM'}],tagI:['R1','R2','R3'],
+  {name:'ميد 2021: 1k · 560 · 330',els:parEls(6,1000,560,330),meters:[{id:'AM'},{id:'VM'}],panels:[['I1 (1 kΩ)',s=>fA(s.I.R1)],['I2 (560 Ω)',s=>fA(s.I.R2)],['I3 (330 Ω)',s=>fA(s.I.R3)]],
    scen:[{name:'عادي',cap:'IT = 6/1k + 6/560 + 6/330 = 6 + 10.7 + 18.2 = **34.9 mA**، والفولتميتر بيقرا **6 V**.'},
      {name:'R3 open',set:{R3:{off:true}},cap:'R3 اتفتح ⇐ فرعه بطّل يسحب تيار: الأميتر **16.7 mA** والفولتميتر لسه **6 V** (لأنه متوصل على المصدر). ده سؤال 24.'},
      {name:'R1 open',set:{R1:{off:true}},cap:'R1 اتفتح ⇐ الأميتر = 10.7 + 18.2 = **28.9 mA**.'},
      {name:'المصدر مقفول',set:{E:{v:0}},cap:'المصدر مقفول ⇐ الأميتر **صفر** والفولتميتر **صفر**. ده سؤال 23.'},
      {name:'الفولتميتر بايظ',set:{VM:{off:true}},cap:'لو الأميتر **34.9 mA** طبيعي والفولتميتر **0 V**، يبقى كل المقاومات سليمة والعيب في **الفولتميتر نفسه**. ده سؤال 25.'}]},
-  {name:'2 kΩ ∥ 8 kΩ · 36 V',els:parEls(36,2000,8000,1e9).map(e=>e.id==='R3'?Object.assign(e,{gone:true}):e.id==='t34'||e.id==='t45'||e.id==='VM'||e.id==='b54'||e.id==='b43'?Object.assign(e,{gone:true}):e),tagI:['R1','R2'],meters:[{id:'AM'}],
-   panels:[['RT',()=>'1.6 kΩ'],['IT',s=>fA(s.I.AM),'m'],['P1 / P2',s=>(fW(36**2/2000)+' / '+fW(36**2/8000)),'r']],cap:'المقاومة **الأصغر** بتاخد التيار **الأكبر**: 18 mA في الـ 2 kΩ و4.5 mA في الـ 8 kΩ.'}]};
+  {name:'2 kΩ ∥ 8 kΩ · 36 V',els:parEls(36,2000,8000,1e9).map(e=>e.id==='R3'?Object.assign(e,{gone:true}):e.id==='t34'||e.id==='t45'||e.id==='VM'||e.id==='b54'||e.id==='b43'?Object.assign(e,{gone:true}):e),meters:[{id:'AM'}],
+   panels:[['RT',()=>'1.6 kΩ'],['IT',s=>fA(s.I.AM),'m'],['I1 / I2',s=>fA(s.I.R1)+' / '+fA(s.I.R2)],['P1 / P2',s=>(fW(36**2/2000)+' / '+fW(36**2/8000)),'r']],cap:'المقاومة **الأصغر** بتاخد التيار **الأكبر**: 18 mA في الـ 2 kΩ و4.5 mA في الـ 8 kΩ.'}]};
 
 CH.push({id:1,part:1,ar:'الكميات والوحدات',en:'Quantities and Units',pages:'6–8',
  intro:'شابتر قصير بس سؤاله **مضمون** في الميد: إزاي تكتب أي رقم بالـ **prefix** الصح.',
@@ -1293,17 +1293,17 @@ const bridge={k:'WHEATSTONE BRIDGE',title:'الـ Wheatstone bridge: حرّك Rx
     Rr.cls(['R100','R1k','R400','Rx'],'okc',bal)}}]};
 
 /* ---------- Example 7-11 ---------- */
-const T=[3,0],BL=[0,4.6],BR=[6,4.6],NN=[3,3];
-const src=[W('wt','T','s',[[3,0],[-1.6,0]]),E('E','s','q',[[-1.6,0],[-1.6,4.6]],30,'E','30 V',1),W('wb','q','BL',[[-1.6,4.6],[0,4.6]])];
+const T=[3.9,0],BL=[0,6],BR=[7.8,6],NN=[3.9,3.8];
+const src=[W('wt','T','s',[[3.9,0],[-2,0]]),E('E','s','q',[[-2,0],[-2,6]],30,'E','30 V',1),W('wb','q','BL',[[-2,6],[0,6]])];
 const d1=src.concat([R('A30','T','BL',[T,BL],30,'','30 Ω'),R('A60','T','BR',[T,BR],60,'','60 Ω',-1),R('A90','BL','BR',[BL,BR],90,'','90 Ω'),
-  R('Y1','T','N',[T,NN],10,'','10 Ω',-1),R('Y2','BL','N',[BL,NN],10,'','10 Ω',-1),R('Y3','BR','N',[BR,NN],10,'','10 Ω')]);
-const d3=src.concat([d1[3],d1[4],d1[5],R('D1','T','BL',[T,[2.15,2.75],BL],30,'','30 Ω',-1),R('D2','T','BR',[T,[3.85,2.75],BR],30,'','30 Ω'),R('D3','BL','BR',[BL,[3,3.85],BR],30,'','30 Ω',-1)]);
+  R('Y1','T','N',[T,NN],10,'',''),R('Y2','BL','N',[BL,NN],10,'',''),R('Y3','BR','N',[BR,NN],10,'','')]);
+const d3=src.concat([d1[3],d1[4],d1[5],R('D1','T','BL',[T,[2.8,3.6],BL],30,'','30 Ω',-1),R('D2','T','BR',[T,[5,3.6],BR],30,'','30 Ω'),R('D3','BL','BR',[BL,[3.9,4.9],BR],30,'','30 Ω',-1)]);
 const d4=src.concat([R('P1','T','BL',[T,BL],15,'30 ∥ 30','15 Ω'),R('P2','T','BR',[T,BR],20,'60 ∥ 30','20 Ω',-1),R('P3','BL','BR',[BL,BR],22.5,'90 ∥ 30','22.5 Ω')]);
 const d5=src.concat([d4[3],R('S','T','BL',[T,BR,BL],42.5,'20 + 22.5','42.5 Ω')]);
 const d6=src.concat([R('RT','T','BL',[T,BL],11.09,'RT','11.09 Ω')]);
 const dyapply={k:'Δ–Y IN ACTION',title:'Example 7-11: مفيش ولا series ولا parallel.. لحد ما تحوّل',presets:[{name:'Example 7-11',frames:[
-  {els:d1,cap:'دوّر على أي مقاومتين series أو parallel.. **مفيش**. بس فيه **Y** (التلاتة 10 Ω اللي بيتقابلوا في النص) جوه **Δ**.'},
-  {els:d1,hot:['Y1','Y2','Y3'],still:true,cap:'الـ Y متساوية كلها 10 Ω ⇐ الـ Δ المكافئة **R<sub>Δ</sub> = 3 R<sub>Y</sub> = 30 Ω** لكل ضلع.'},
+  {els:d1,labels:[{at:[3.9,4.55],t:'Y: 10 Ω × 3',c:'ilab'}],cap:'دوّر على أي مقاومتين series أو parallel.. **مفيش**. بس فيه **Y** (التلاتة 10 Ω اللي بيتقابلوا في النص) جوه **Δ**.'},
+  {els:d1,labels:[{at:[3.9,4.55],t:'Y: 10 Ω × 3',c:'ilab'}],hot:['Y1','Y2','Y3'],still:true,cap:'الـ Y متساوية كلها 10 Ω ⇐ الـ Δ المكافئة **R<sub>Δ</sub> = 3 R<sub>Y</sub> = 30 Ω** لكل ضلع.'},
   {els:d3,pop:['D1','D2','D3'],gone:['Y1','Y2','Y3'],still:true,hot:['D1','D2','D3'],cap:'شيلنا الـ Y وحطينا مكانها Δ (30 Ω بين كل نقطتين). دلوقتي كل ضلع بقى فيه **مقاومتين parallel**!'},
   {els:d4,pop:['P1','P2','P3'],gone:['A30','A60','A90','D1','D2','D3'],still:true,cap:'30∥30 = **15**، 60∥30 = **20**، 90∥30 = **22.5 Ω**.'},
   {els:d5,merge:{from:['P2','P3'],into:'S'},still:true,cap:'الـ 20 والـ 22.5 ورا بعض من T لـ BL ⇐ series = **42.5 Ω**.'},
@@ -1377,8 +1377,8 @@ const srcq={k:'SOURCES',title:'ميد 2021 س15–18: مصدر جهد ومصدر
   panels:[['I (2 Ω)',s=>fA(s.I.R2),'r'],['Vbc',s=>fV(s.V.b-s.V.c)],['Vac',s=>fV(s.V.a-s.V.c),'m']]}]};
 /* ---------- source conversion side by side ---------- */
 const conv=[E('E','p','n',[[0,0],[0,3]],10,'E','10 V',1),R('Rs','p','a',[[0,0],[2.5,0]],5,'Rs','5 Ω',-1),{id:'RL',t:'Rv',n:['a','m'],p:[[2.5,0],[2.5,3]],v:5,lab:'RL',val:'',ls:-1},W('w1','m','n',[[2.5,3],[0,3]]),
-  I('I','n2','q',[[5,3],[5,0]],2,'I = E/Rs','2 A',1),W('w2','q','q2',[[5,0],[6.5,0]]),R('Rs2','q2','n3',[[6.5,0],[6.5,3]],5,'Rs','5 Ω',-1),W('w3','q2','a2',[[6.5,0],[8,0]]),{id:'RL2',t:'Rv',n:['a2','m2'],p:[[8,0],[8,3]],v:5,lab:'RL',val:'',ls:-1},W('w4','m2','n3',[[8,3],[6.5,3]]),W('w5','n3','n2',[[6.5,3],[5,3]])];
-const srcconv={k:'E = I·Rs',title:'مصدر جهد ⇄ مصدر تيار: الحمل مش هيحس بأي فرق',presets:[{name:'10 V + 5 Ω  ⇄  2 A ∥ 5 Ω',els:conv,tagI:['RL','RL2','Rs','Rs2'],
+  I('I','n2','q',[[0,7.4],[0,4.4]],2,'I = E/Rs','2 A',1),W('w2','q','q2',[[0,4.4],[1.5,4.4]]),R('Rs2','q2','n3',[[1.5,4.4],[1.5,7.4]],5,'Rs','5 Ω',-1),W('w3','q2','a2',[[1.5,4.4],[3,4.4]]),{id:'RL2',t:'Rv',n:['a2','m2'],p:[[3,4.4],[3,7.4]],v:5,lab:'RL',val:'',ls:-1},W('w4','m2','n3',[[3,7.4],[1.5,7.4]]),W('w5','n3','n2',[[1.5,7.4],[0,7.4]])];
+const srcconv={k:'E = I·Rs',title:'مصدر جهد ⇄ مصدر تيار: الحمل مش هيحس بأي فرق',presets:[{name:'10 V + 5 Ω  ⇄  2 A ∥ 5 Ω',els:conv,labels:[{at:[1.25,-.75],t:'voltage source',c:'tx'},{at:[1.5,3.75],t:'current source',c:'tx'}],tagI:['RL','RL2','Rs','Rs2'],
   sliders:[{lab:'RL',ids:['RL','RL2'],min:.5,max:30,step:.5,v:5,fmt:x=>x+' Ω'}],
   panels:[['IL (voltage source)',s=>fA(s.I.RL),'r'],['IL (current source)',s=>fA(s.I.RL2),'r'],['VL (الاتنين)',s=>fV(Math.abs(s.I.RL)*0+(s.V.a-s.V.m))],['I في Rs (مختلف!)',s=>fA(s.I.Rs)+' / '+fA(s.I.Rs2),'m']],
   cap:'غيّر RL: تيار وجهد الحمل **متطابقين** في الدايرتين. بس التيار **جوه** Rs مختلف ⇐ التكافؤ بيكون **بالنسبة للأطراف الخارجية بس**.'}]};
@@ -1433,7 +1433,7 @@ const superpos={k:'SUPERPOSITION',title:'superposition: شغّل مصدر واح
   {els:sw(s16,{E:S}),tagI:['RL'],hot:['I'],cap:'**مصدر التيار بس**: مصدر الجهد بيتشال ويتحط مكانه **short**. الـ 2 A بتتقسم بين R1 وRL ⇐ IL(2) = 24/40 × 2 = **1.2 A لفوق** (−1.2).'},
   {els:s16,tagI:['RL'],eq:'<div class="row">IL = IL(1) + IL(2) = 0.5 + (−1.2) = <span class="r">−0.7 A</span>  (يعني 0.7 A لفوق)</div>',cap:'اجمع **جبريًا** بالإشارة. النتيجة نفس الدايرة الأصلية بالظبط.'},
   {els:s16,still:true,hot:['RL'],eq:'<div class="row">P1 = 0.5² × 16 = 4 W   ,   P2 = 1.2² × 16 = 23.04 W</div><div class="row">P1 + P2 = 27.04 W   ≠   <span class="r">PL = 0.7² × 16 = 7.84 W</span></div>',cap:'⚠️ الـ superposition **مينفعش على القدرة** لأن P = I²R مش خطية. احسب التيار الكلي الأول وبعدين القدرة.'}]},
- {name:'Example 8-17',frames:[
+ {name:'Example 8-17',pad:1.5,frames:[
   {els:s17,gnd:'b1',tagV:['R2'],cap:'3 مصادر. عايزين الجهد على **R2**.'},
   {els:sw(s17,{I:X,E2:S}),gnd:'b1',tagV:['R2'],hot:['E1'],cap:'**E1 بس**: R2 ∥ R3 = 0.8 kΩ ⇐ VR2(1) = 0.8/(2.4+0.8) × (−16) = **−4 V**.'},
   {els:sw(s17,{E1:S,E2:S}),gnd:'b1',tagV:['R2'],hot:['I'],cap:'**I بس**: R1 ∥ R2 ∥ R3 = 0.6 kΩ ⇐ VR2(2) = 0.6k × 5 mA = **3 V**.'},
@@ -2667,8 +2667,8 @@ const css=`
 .ckbanner.r{background:color-mix(in srgb,var(--s-red) 14%,transparent);border-color:var(--s-red);color:var(--s-red2)}
 @media (prefers-reduced-motion:reduce){.ck .fl{display:none}}
 `;
-window.ckFitSvg=v=>{const vb=v.viewBox&&v.viewBox.baseVal;const w=v.clientWidth;if(!vb||!w)return;const ks=Math.max(1,Math.min(1.45,vb.width/w*.9)).toFixed(2);if(v.dataset.k!==ks){v.dataset.k=ks;v.style.setProperty('--k',ks)}};
-const fit=()=>{document.querySelectorAll('.ck svg').forEach(v=>{const vb=v.viewBox&&v.viewBox.baseVal;const w=v.clientWidth;if(!vb||!w)return;const k=Math.max(1,Math.min(1.45,vb.width/w*.9));const ks=k.toFixed(2);if(v.dataset.k!==ks){v.dataset.k=ks;v.style.setProperty('--k',ks)}})};
+window.ckFitSvg=v=>{const vb=v.viewBox&&v.viewBox.baseVal;const w=v.clientWidth;if(!vb||!w)return;const ks=Math.max(1,Math.min(1.75,vb.width/w*.9)).toFixed(2);if(v.dataset.k!==ks){v.dataset.k=ks;v.style.setProperty('--k',ks);if(v._ckR&&window.CK)CK.layout(v._ckR)}};
+const fit=()=>{document.querySelectorAll('.ck svg').forEach(v=>window.ckFitSvg(v))};
 let fq=0;const sched=()=>{if(fq)return;fq=requestAnimationFrame(()=>{fq=0;fit()})};
 addEventListener('resize',sched);addEventListener('hashchange',()=>setTimeout(sched,60));
 try{new MutationObserver(m=>{for(const r of m){if(r.addedNodes.length&&[...r.addedNodes].some(n=>n.nodeType===1&&(n.matches&&(n.matches('.ck,.viz,svg')||n.querySelector&&n.querySelector('.ck svg'))))){sched();break}}}).observe(document.documentElement,{childList:true,subtree:true})}catch(e){}
@@ -2681,13 +2681,54 @@ renderQ=function(q,opts){const b=_rq0(q,opts||{});if(q.fig&&window.FIGS&&FIGS[q.
 const _rw0=renderWritten;
 renderWritten=function(w,num){const b=_rw0(w,num);const figs=[].concat(w.fig||[]);if(figs.length&&window.FIGS){const s=b.querySelector('.stem');if(s)s.insertAdjacentHTML('afterend',figs.filter(k=>FIGS[k]).map(k=>`<figure class="qfig"><img src="${FIGS[k]}" alt="" loading="lazy"></figure>`).join(''))}return b};
 
+/* ===================== my answer box on written questions ===================== */
+(function(){
+const css=`.myans{margin-top:16px;border-top:1px dashed var(--hair);padding-top:14px}
+.myans .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.myans textarea,.myans input{width:100%;box-sizing:border-box;font-family:"Jost",var(--f-body);font-size:16px;line-height:1.6;color:var(--ink);background:var(--paper);border:1px solid var(--hair);border-radius:14px;padding:12px 14px;direction:ltr;text-align:left;resize:vertical}
+.myans textarea{min-height:130px}
+.myans textarea:focus,.myans input:focus{outline:2px solid var(--red);outline-offset:1px;border-color:transparent}
+.myans label{display:block;font-family:var(--f-head);font-weight:700;font-size:14px;color:var(--ink-2);margin:12px 0 6px}
+.myans .hint{font-size:13px;color:var(--ink-3);margin-top:6px}
+.myans .saved{font-size:13px;color:var(--ok);font-weight:600}
+.myans .cmp{margin-top:14px;background:var(--paper-2);border:1px solid var(--hair);border-radius:16px;padding:12px 14px}
+.myans .cmp b{font-family:var(--f-head)}
+.myans .cmp pre{margin:6px 0 0;white-space:pre-wrap;font-family:"Jost",var(--f-body);font-size:15px;direction:ltr;text-align:left;color:var(--ink)}
+.myans .grade{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.myans .grade .btn.on{outline:2px solid currentColor}
+.pill.okp{background:var(--ok-soft);color:var(--ok)}.pill.badp{background:var(--red-soft);color:var(--red)}`;
+const st=document.createElement('style');st.textContent=css;document.head.appendChild(st);
+const W=()=>(Store.d.wans=Store.d.wans||{});
+const _mp=mergeProgress;
+mergeProgress=function(a,b){const o=_mp(a,b);const x=(a&&a.wans)||{},y=(b&&b.wans)||{};const w=Object.assign({},y);for(const k in x){if(!w[k]||(x[k].t||0)>(w[k].t||0))w[k]=x[k]}o.wans=w;return o};
+const _rw=renderWritten;
+renderWritten=function(w,num){const b=_rw(w,num);const st=W()[w.k]||{};
+  const pills=b.querySelector('.src');const mark=()=>{const s=W()[w.k]||{};let p=pills.querySelector('.mk');if(!p){p=document.createElement('span');p.className='pill mk';pills.appendChild(p)}
+    p.className='pill mk '+(s.mark==='ok'?'okp':s.mark==='bad'?'badp':'');p.textContent=s.mark==='ok'?'حليتها صح ✓':s.mark==='bad'?'محتاج أراجعها':(s.txt||s.res)?'إجابتك محفوظة':'';p.hidden=!p.textContent};
+  const box=el(`<div class="myans"><div class="row"><button class="btn sm ghost" data-a="open">✎ ${st.txt||st.res?'إجابتك':'اكتب إجابتك'}</button></div><div class="body" hidden>
+    <label>إجابتك (الخطوات)</label><textarea placeholder="e.g.  RT = 50 + 500 || 1400 = 418.42 Ohm"></textarea>
+    <label>الناتج النهائي</label><input type="text" placeholder="e.g.  I = 2.5 A ,  Vab = -1.33 V">
+    <div class="row" style="margin-top:12px"><button class="btn sm ink" data-a="cmp">قارن بالحل النموذجي</button><span class="saved" hidden>اتحفظت ✓</span></div>
+    <div class="hint">بتتحفظ أول بأول على الجهاز ده (ومع حسابك لو فاتح من Claude).</div>
+    <div class="cmp" hidden></div></div></div>`);
+  const solBtn=b.querySelector('.written > .row button, .row .btn');const body=box.querySelector('.body');const ta=box.querySelector('textarea'),inp=box.querySelector('input'),sv=box.querySelector('.saved'),cmp=box.querySelector('.cmp');
+  ta.value=st.txt||'';inp.value=st.res||'';
+  let tm=0;const save=()=>{clearTimeout(tm);tm=setTimeout(()=>{const s=W()[w.k]||{};s.txt=ta.value;s.res=inp.value;s.t=Date.now();W()[w.k]=s;Store.save();sv.hidden=false;setTimeout(()=>sv.hidden=true,1200);mark()},400)};
+  ta.addEventListener('input',save);inp.addEventListener('input',save);
+  box.querySelector('[data-a="open"]').addEventListener('click',e=>{body.hidden=!body.hidden;if(!body.hidden)ta.focus()});
+  box.querySelector('[data-a="cmp"]').addEventListener('click',()=>{const s=W()[w.k]||{};const sol=b.querySelector('.sol');if(sol&&sol.hidden){const sb=[...b.querySelectorAll('button')].find(x=>/اعرض الحل/.test(x.textContent));sb&&sb.click()}
+    cmp.hidden=false;cmp.innerHTML=`<b>إجابتك</b><pre>${esc((s.txt||'').trim()||'—')}</pre>${s.res?`<b style="display:block;margin-top:8px">الناتج بتاعك</b><pre>${esc(s.res)}</pre>`:''}<div style="margin-top:10px">قارنها بالحل النموذجي تحت، وقيّم نفسك:</div><div class="grade"><button class="btn sm ghost ${s.mark==='ok'?'on':''}" data-g="ok" style="color:var(--ok)">✓ حليتها صح</button><button class="btn sm ghost ${s.mark==='bad'?'on':''}" data-g="bad" style="color:var(--red)">✗ محتاج أراجعها</button></div>`;
+    cmp.querySelectorAll('[data-g]').forEach(g=>g.addEventListener('click',()=>{const s2=W()[w.k]||{};s2.mark=g.dataset.g;s2.t=Date.now();W()[w.k]=s2;Store.save();cmp.querySelectorAll('[data-g]').forEach(z=>z.classList.toggle('on',z===g));mark()}))});
+  const sol=b.querySelector('.sol');(sol||b.lastChild).parentNode.insertBefore(box,sol||null);mark();return b};
+})();
+
 /* ===================== circuit kit: DC solver + animated schematic =====================
    element: {id, t, n:[nodeA,nodeB], p:[[x,y],...] (grid units, from node A to node B), v, lab, val, ls (label side +1/-1), seg}
    t: R resistor · Rv variable · V battery (n[0] = +) · Vc round source · I current source (current v flows n0 -> n1)
       w wire · A ammeter · Vm voltmeter · G galvanometer · S switch (on) · X open gap · C capacitor · L inductor
    currents are positive from n[0] to n[1] (through the element), and the flow dots run that way. */
 const CK={U:56};
-CK.fmt=function(x,unit,dig){if(x===undefined||x===null||!isFinite(x))return '—';const a=Math.abs(x);let s,p='';
+CK.fmt=function(x,unit,dig){if(x===undefined||x===null||!isFinite(x))return '—';x=+(+x).toPrecision(4);if(Math.abs(x)<1e-11)x=0;const a=Math.abs(x);let s,p='';
   if(a===0){s='0'}else if(a>=1e6){s=(x/1e6);p='M'}else if(a>=1e3&&unit!=='W'&&unit!=='V'){s=x/1e3;p='k'}else if(a>=1e3&&(unit==='W'||unit==='V')&&a>=1e4){s=x/1e3;p='k'}else if(a<1e-6){s=x*1e9;p='n'}else if(a<1e-3){s=x*1e6;p='µ'}else if(a<1){s=x*1e3;p='m'}else s=x;
   if(typeof s==='number'){const d=dig===undefined?3:dig;s=+s.toPrecision(Math.max(1,d+ (Math.abs(s)>=100?1:0)));s=String(s)}
   return s+' '+p+(unit||'')};
@@ -2752,19 +2793,17 @@ CK.draw=function(host,spec){
       const ang=Math.atan2(dy,dx)*180/Math.PI;e._ang=ang;
       const pa=P.slice(0,si+1).concat([[mx-ux*L/2,my-uy*L/2]]),pb=[[mx+ux*L/2,my+uy*L/2]].concat(P.slice(si+1));
       body=`<polyline class="w" points="${pa.map(p=>p.join(',')).join(' ')}"/><polyline class="w" points="${pb.map(p=>p.join(',')).join(' ')}"/><g class="sg" transform="translate(${mx} ${my}) rotate(${ang})">${CK.sym(e,L,U)}</g>`;
-      const nx=-uy,ny=ux;const side=e.ls||1;const off=U*.52;const lx=mx+nx*off*side,ly=my+ny*off*side;
-      const horiz=Math.abs(uy)<.3;const anchor=horiz?'middle':(nx*side>0?'start':'end');
-      const twoLine=e.lab&&e.val;let ty=ly+(horiz?(ny*side>0?12:-4):5);if(horiz&&twoLine&&ny*side<0)ty-=14;
-      if(e.lab||e.val){const y0=ty-(twoLine&&!horiz?8:0);
-        body+=`<text class="clab" x="${lx}" y="${y0}" text-anchor="${anchor}">${e.lab||''}${e.val?`<tspan class="val vtxt" x="${lx}" dy="${e.lab?'1.12em':'0'}">${e.val}</tspan>`:''}</text>`}
-      e._mid=[mx,my];e._n=[nx*side,ny*side]}
+      const nx=-uy,ny=ux;const side=e.ls||1;
+      if(e.lab||e.val)body+=`<g class="lb" data-for="${e.id}">${e.lab?`<text class="clab">${e.lab}</text>`:''}${e.val?`<text class="val vtxt">${e.val}</text>`:''}</g>`;
+      const W={V:.66,Vc:.72,I:.72,A:.66,Vm:.66,G:.66,S:.72,X:.3,C:.62,L:.42,Rv:.95}[e.t]||.42;
+      e._mid=[mx,my];e._n=[nx*side,ny*side];e._u=[ux,uy];e._L=L;e._W=W*U}
     s+=`<g class="el" data-id="${e.id}">${body}<polyline class="fl" data-f="${e.id}" points="${P.map(p=>p.join(',')).join(' ')}" style="opacity:0"/></g>`});
   // junction dots + terminals + node labels
   Object.keys(cnt).forEach(k=>{if(cnt[k]>=3){const [x,y]=k.split(',').map(Number);s+=`<circle class="dot" cx="${x*U}" cy="${y*U}" r="4"/>`}});
   (spec.terms||[]).forEach(t=>{s+=`<circle class="term" cx="${t[0]*U}" cy="${t[1]*U}" r="5"/>`});
-  (spec.labels||[]).forEach(l=>{s+=`<text class="${l.c||'nlab'}" x="${l.at[0]*U}" y="${l.at[1]*U}" text-anchor="${l.a||'middle'}">${l.t}</text>`});
+  (spec.labels||[]).forEach(l=>{s+=`<text class="${l.c||'nlab'} nl" data-x="${l.at[0]*U}" data-y="${l.at[1]*U}" x="${l.at[0]*U}" y="${l.at[1]*U}" text-anchor="${l.a||'middle'}">${l.t}</text>`});
   s+=`<g class="over"></g></svg>`;wrap.innerHTML=s;host.appendChild(wrap);if(window.ckFitSvg)ckFitSvg($('svg',wrap));
-  const svg=$('svg',wrap);const fl={};$$('.fl',svg).forEach(p=>{fl[p.dataset.f]={p,len:p.getTotalLength?p.getTotalLength():100,off:0,sp:0}});
+  const svg=$('svg',wrap);svg._ckR=null;const fl={};$$('.fl',svg).forEach(p=>{fl[p.dataset.f]={p,len:p.getTotalLength?p.getTotalLength():100,off:0,sp:0}});
   const R={wrap,svg,U,spec,fl,over:$('.over',svg),glows:$('.glows',svg),
     elg:id=>svg.querySelector(`.el[data-id="${id}"]`),
     cls(ids,c,on=true){[].concat(ids).forEach(i=>{const g=R.elg(i);if(g)g.classList.toggle(c,on)})},
@@ -2773,11 +2812,12 @@ CK.draw=function(host,spec){
       Object.keys(fl).forEach(k=>{const f=fl[k];const i=I[k]||0;const on=m>0&&Math.abs(i)>m*1e-4;f.sp=on?(i/m)*(opt.speed||70)*(.35+.65*Math.min(1,Math.abs(i)/m)):0;
         f.p.style.opacity=on?1:0;const gap=U*.42;f.p.style.strokeDasharray=`0.01 ${gap}`;f.p.classList.toggle('r',!!(opt.red&&opt.red.includes(k)))})},
     stopFlow(){Object.values(fl).forEach(f=>{f.sp=0;f.p.style.opacity=0})},
-    tag(id,txt,cls,dy){const e=spec.els.find(x=>x.id===id);if(!e||!e._mid)return;const [mx,my]=e._mid,[nx,ny]=e._n;const horiz=Math.abs(nx)<.3;let x,y,anc;
-      if(horiz){x=mx;y=my-ny*U*.62+(ny<0?14:-4)+(dy||0);anc='middle'}else{x=mx+nx*U*.52;y=my+((e.lab&&e.val)?30:(e.lab||e.val)?24:5)+(dy||0);anc=nx>0?'start':'end'}
-      R.over.insertAdjacentHTML('beforeend',`<text class="${cls||'ilab'}" x="${x}" y="${y}" text-anchor="${anc}">${txt}</text>`);CK.declutter(R.svg,R.over.lastElementChild,horiz&&ny>0?-1:1)},
+    tag(id,txt,cls){const e=spec.els.find(x=>x.id===id);if(!e||!e._mid)return;
+      R.over.insertAdjacentHTML('beforeend',`<text class="${cls||'ilab'} tg" data-for="${id}">${txt}</text>`);R.relayout()},
+    relayout(){if(R._q)return;R._q=1;Promise.resolve().then(()=>{R._q=0;CK.layout(R)})},
     clearTags(){R.over.innerHTML=''},
     pos(x,y){return [x*U,y*U]}};
+  svg._ckR=R;CK.layout(R);if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{if(svg.isConnected)CK.layout(R)});
   // animation loop
   let last=0,raf=0,alive=true;
   function tick(t){if(!alive)return;if(!wrap.isConnected&&last){alive=false;return}const dt=last?Math.min(.05,(t-last)/1000):0;last=t;
@@ -2785,6 +2825,37 @@ CK.draw=function(host,spec){
   if(!RM)raf=requestAnimationFrame(tick);
   if(typeof cleanup!=='undefined')cleanup.push(()=>{alive=false;cancelAnimationFrame(raf)});
   return R};
+/* ---------- label placer: puts every label where it touches no wire, symbol or other text ---------- */
+CK.layout=function(R){const svg=R.svg,U=R.U;if(!svg.isConnected)return;const vb=svg.viewBox.baseVal;
+  const obs=[];const addR=(x0,y0,x1,y1,w)=>obs.push([Math.min(x0,x1),Math.min(y0,y1),Math.max(x0,x1),Math.max(y0,y1),w||1]);
+  $$('.el .w',svg).forEach(pl=>{const pts=(pl.getAttribute('points')||'').trim().split(/\s+/).map(q=>q.split(',').map(Number));for(let i=0;i<pts.length-1;i++){const [a,b]=pts[i],[c,d]=pts[i+1];addR(a-5,b-5,c+5,d+5,1)}});
+  R.spec.els.forEach(e=>{if(e.gone||!e._mid||e.t==='w')return;const [mx,my]=e._mid,[ux,uy]=e._u,h=e._L/2+4,w=e._W/2;let xs=[],ys=[];
+    [[h,w],[h,-w],[-h,w],[-h,-w]].forEach(([a,b])=>{xs.push(mx+ux*a-uy*b);ys.push(my+uy*a+ux*b)});addR(Math.min(...xs),Math.min(...ys),Math.max(...xs),Math.max(...ys),1.2)});
+  $$('circle.dot,circle.term',svg).forEach(c=>{const x=+c.getAttribute('cx'),y=+c.getAttribute('cy');addR(x-8,y-8,x+8,y+8,1)});
+  $$('.over .loop, .over .look path',svg).forEach(p=>{try{const b=p.getBBox();addR(b.x-2,b.y-2,b.x+b.width+2,b.y+b.height+2,.8)}catch(e){}});
+  const fs=t=>{const v=parseFloat(getComputedStyle(t).fontSize);return isFinite(v)&&v>0?v:14};
+  const tw=t=>{try{return t.getComputedTextLength()}catch(e){return (t.textContent||'').length*fs(t)*.55}};
+  const ov=(b)=>{let c=0;for(const o of obs){const ix=Math.min(b[2],o[2])-Math.max(b[0],o[0]),iy=Math.min(b[3],o[3])-Math.max(b[1],o[1]);if(ix>0&&iy>0)c+=ix*iy*o[4]}
+    const ox=Math.max(0,vb.x-b[0])+Math.max(0,b[2]-(vb.x+vb.width)),oy=Math.max(0,vb.y-b[1])+Math.max(0,b[3]-(vb.y+vb.height));c+=(ox*(b[3]-b[1])+oy*(b[2]-b[0]))*6;return c};
+  // block of lines: returns {box, apply}
+  function block(texts,x,y,anchor,vmode){const L=texts.map(t=>({t,w:tw(t),f:fs(t)}));const H=L.reduce((a,l)=>a+l.f*1.15,0)-L[L.length-1].f*.15;const W=Math.max(...L.map(l=>l.w));
+    const top=vmode==='center'?y-H/2:vmode==='above'?y-H:y;const x0=anchor==='start'?x:anchor==='end'?x-W:x-W/2;
+    return {box:[x0-2,top-1,x0+W+2,top+H+1],apply(){let yy=top;L.forEach(l=>{yy+=l.f*.82;l.t.setAttribute('x',x);l.t.setAttribute('y',yy);l.t.setAttribute('text-anchor',anchor);yy+=l.f*.33})}}}
+  function candidates(e,pref){const [mx,my]=e._mid,[ux,uy]=e._u,sg=e.ls||1,nx0=-uy*sg,ny0=ux*sg;const out=[];
+    [pref,-pref].forEach((sd,si)=>{const nx=nx0*sd,ny=ny0*sd;[.38,.56,.8,1.05,1.35].forEach((d,di)=>{[0,.3,-.3,.6,-.6,.95,-.95].forEach((t,ti)=>{
+      const dd=d*U+(Math.abs(nx)>.3?0:0);const px=mx+nx*(dd+ (Math.abs(nx)>.7?0:0))+ux*t*U,py=my+ny*dd+uy*t*U;
+      let anchor,vm;if(Math.abs(ny)>.7){anchor='middle';vm=ny<0?'above':'below'}else{anchor=nx>0?'start':'end';vm='center'}
+      out.push({px,py,anchor,vm,pen:si*900+di*120+Math.abs(t)*260})})})});return out}
+  function place(texts,cands){let best=null;for(const c of cands){const b=block(texts,c.px,c.py,c.anchor,c.vm);const cost=ov(b.box)*40+c.pen;if(!best||cost<best.cost)best={cost,b};if(cost<1)break}
+    if(best){best.b.apply();addR(...best.b.box,6)}}
+  // 1) node labels (small nudges only)
+  $$('text.nl',svg).forEach(t=>{const x=+t.dataset.x,y=+t.dataset.y;const c=[[0,0],[.28,0],[-.28,0],[0,-.28],[0,.3],[.3,-.25],[-.3,-.25],[.3,.3],[-.3,.3],[.5,0],[-.5,0]].map(([a,b],i)=>({px:x+a*U,py:y+b*U,anchor:'middle',vm:'center',pen:i*60}));
+    const b0=block([t],x,y,'middle','center');place([t],c.map(q=>Object.assign(q,{py:q.py-(b0.box[3]-b0.box[1])*0})))});
+  // 2) element labels
+  R.spec.els.forEach(e=>{if(e.gone||!e._mid)return;const g=svg.querySelector(`.el[data-id="${e.id}"] .lb`);if(!g)return;place([...g.querySelectorAll('text')],candidates(e,1))});
+  // 3) tags (currents, voltages, meter readings)
+  $$('.over text.tg',svg).forEach(t=>{const e=R.spec.els.find(x=>x.id===t.dataset.for);if(!e)return;place([t],candidates(e,-1))});
+};
 CK.declutter=function(svg,t,dir){if(!t||!t.getBBox)return;let b;try{b=t.getBBox()}catch(e){return}if(!b.width)return;
   const others=[...svg.querySelectorAll('text')].filter(o=>o!==t&&!t.contains(o)&&!o.contains(t));const hit=bb=>others.some(o=>{let a;try{a=o.getBBox()}catch(e){return false}return a.width&&a.x<bb.x+bb.width-1&&bb.x<a.x+a.width-1&&a.y<bb.y+bb.height-2&&bb.y<a.y+a.height-2});
   let y=+t.getAttribute('y'),k=0;while(k<4&&hit(t.getBBox())){y+=dir*b.height*.95;t.setAttribute('y',y);k++}};
@@ -2818,16 +2889,16 @@ function ckTags(R,sol,f){R.clearTags();
   (f.tagI||[]).forEach(id=>{const i=sol.I[id];R.tag(id,CK.fmt(Math.abs(i),'A'),'ilab')});
   (f.tagV||[]).forEach(id=>{const e=R.spec.els.find(x=>x.id===id);if(!e)return;const v=sol.V[e.n[0]]-sol.V[e.n[1]];R.tag(id,CK.fmt(Math.abs(v),'V'),'ilab')});
   Object.entries(f.tags||{}).forEach(([id,t])=>R.tag(id,t,'ilab'));
-  (f.nodeV||[]).forEach(([k,x,y])=>{const v=sol.V[k];R.over.insertAdjacentHTML('beforeend',`<text class="vtag" style="fill:var(--s-red)" x="${x*R.U}" y="${y*R.U}" text-anchor="middle">${CK.fmt(v,'V')}</text>`)})}
+  (f.nodeV||[]).forEach(([k,x,y])=>{const v=sol.V[k];R.over.insertAdjacentHTML('beforeend',`<text class="vtag nl" data-x="${x*R.U}" data-y="${y*R.U}" style="fill:var(--s-red)" x="${x*R.U}" y="${y*R.U}" text-anchor="middle">${CK.fmt(v,'V')}</text>`)});if(R.relayout)R.relayout()}
 function ckLoops(R,loops){(loops||[]).forEach((l,i)=>{const U=R.U,cx=l.c[0]*U,cy=l.c[1]*U,r=(l.r||.55)*U;const cw=l.ccw?-1:1;
   const col=l.col||'var(--s-red)';const a0=-150,a1=150;const pt=a=>[cx+r*Math.cos(a*Math.PI/180),cy+cw*r*Math.sin(a*Math.PI/180)];
   const [sx,sy]=pt(a0),[ex,ey]=pt(a1);const g=document.createElementNS('http://www.w3.org/2000/svg','g');
   g.innerHTML=`<path class="loop" style="stroke:${col}" d="M${sx} ${sy} A${r} ${r} 0 1 ${cw>0?1:0} ${ex} ${ey}"/><path style="fill:${col}" d="M${ex} ${ey} l${-9*cw*Math.sin(a1*Math.PI/180)-6*Math.cos(a1*Math.PI/180)} ${9*Math.cos(a1*Math.PI/180)*cw-6*Math.sin(a1*Math.PI/180)*cw} l${14*Math.cos(a1*Math.PI/180)} ${14*Math.sin(a1*Math.PI/180)*cw}z"/><text class="ilab" style="fill:${col}" x="${cx}" y="${cy+5}" text-anchor="middle">${l.t||''}</text>`;
-  g.setAttribute('transform-origin',`${cx} ${cy}`);R.over.appendChild(g);
-  if(!RM&&l.spin!==false)gsap.fromTo(g,{rotation:-25*cw,opacity:0},{rotation:0,opacity:1,duration:.7,ease:'back.out(1.6)',svgOrigin:`${cx} ${cy}`})})}
+  R.over.appendChild(g);
+  if(!RM){const pth=g.querySelector('.loop');try{const L=pth.getTotalLength();pth.style.strokeDasharray=L;pth.style.strokeDashoffset=L;gsap.to(pth,{strokeDashoffset:0,duration:.8,ease:'power2.out'})}catch(e){}gsap.fromTo(g,{opacity:0},{opacity:1,duration:.4})}});if(loops&&loops.length&&R.relayout)R.relayout()}
 function ckLook(R,lk){if(!lk)return;const U=R.U,[x,y]=lk.at,dx=lk.dx||-1;const x0=x*U,y0=y*U,x1=(x+dx*1.1)*U;
-  R.over.insertAdjacentHTML('beforeend',`<g class="look"><path d="M${x1} ${y0} H${x0+dx*-8}" style="stroke:var(--s-red);stroke-width:3;fill:none"/><path d="M${x0+dx*-2} ${y0} l${dx*12} -7 v14z" style="fill:var(--s-red)"/><text class="ilab" x="${x1+dx*6}" y="${y0-10}" text-anchor="${dx<0?'end':'start'}">${lk.t||''}</text></g>`);
-  if(!RM)gsap.fromTo($('.look',R.over),{x:dx*30,opacity:0},{x:0,opacity:1,duration:.6,ease:'power3.out'})}
+  R.over.insertAdjacentHTML('beforeend',`<g class="look"><path d="M${x1} ${y0} H${x0+dx*-8}" style="stroke:var(--s-red);stroke-width:3;fill:none"/><path d="M${x0+dx*-2} ${y0} l${dx*12} -7 v14z" style="fill:var(--s-red)"/><text class="ilab nl" data-x="${x1+dx*6}" data-y="${y0-14}" x="${x1+dx*6}" y="${y0-10}" text-anchor="middle">${lk.t||''}</text></g>`);
+  if(!RM)gsap.fromTo($('.look',R.over),{opacity:0},{opacity:1,duration:.6});if(R.relayout)R.relayout()}
 
 VIZ.circ=function(n,o){
   const P=o.presets;let cur=0,sc=0,R=null,els=null,sol=null,heat=false;
@@ -2863,7 +2934,7 @@ VIZ.frames=function(n,o){
   let st=null;
   function show(k,anim){const p=P[cur],f=p.frames[k];const bb=p._bb||(p._bb=ckBounds(p.frames.map(x=>x.els)));
     const old=R?{svg:R.svg,boxes:{}}:null;if(old)$$('.el',R.svg).forEach(g=>{try{const b=g.getBBox();old.boxes[g.dataset.id]={x:b.x+b.width/2,y:b.y+b.height/2,g}}catch(e){}});
-    const els=ckClone(f.els);stage.innerHTML='';R=CK.draw(stage,{els,terms:f.terms||p.terms,labels:f.labels||p.labels,vbox:bb,U:p.U,maxW:p.maxW});
+    const els=ckClone(f.els);stage.innerHTML='';R=CK.draw(stage,{els,terms:f.terms||p.terms,labels:f.labels||p.labels,vbox:bb,U:p.U,maxW:p.maxW,pad:p.pad});
     els.forEach(e=>{if(e.off)R.cls(e.id,'dim')});(f.dim||[]).forEach(i=>R.cls(i,'dim'));(f.hot||[]).forEach(i=>R.cls(i,'hot'));(f.hot2||[]).forEach(i=>R.cls(i,'hot2'));(f.ok||[]).forEach(i=>R.cls(i,'okc'));
     let sol=null;if(f.solve!==false&&!f.still){sol=CK.solve(els,f.gnd||p.gnd);R.setFlow(sol.I,{speed:f.speed,red:f.redFlow})}
     if(sol)ckTags(R,sol,f);else ckTags(R,{I:{},V:{}},{tags:f.tags});
@@ -3223,7 +3294,7 @@ VIZ.ptri=function(n,o){const P=o.presets;let cur=0,qc=0;
     s+=`<path d="M${x0} ${y0}H${x0+p.P*sc}V${Y(p.Q)}Z" style="fill:none;stroke:var(--s-dim);stroke-width:2;stroke-dasharray:6 6"/>`;
     s+=`<path d="M${x0} ${y0}H${x0+p.P*sc}V${Y(Q)}Z" style="fill:color-mix(in srgb,var(--s-red) 12%,transparent);stroke:none"/>`+ckLine(`M${x0} ${y0}H${x0+p.P*sc}`,'var(--s-ok)',4)+ckLine(`M${x0+p.P*sc} ${y0}V${Y(Q)}`,'var(--s-mus)',4)+ckLine(`M${x0} ${y0}L${x0+p.P*sc} ${Y(Q)}`,'var(--s-red)',4);
     if(qc>0)s+=ckLine(`M${x0+p.P*sc+18} ${Y(p.Q)}V${Y(Q)}`,'var(--s-ok)',3,'4 4')+`<text class="ilab" style="fill:var(--s-ok)" x="${x0+p.P*sc+24}" y="${(Y(p.Q)+Y(Q))/2}">Qc</text>`;
-    s+=`<text class="ilab" style="fill:var(--s-ok)" x="${x0+p.P*sc/2}" y="${y0+(p.Q>=0?22:-10)}" text-anchor="middle">P = ${+p.P.toPrecision(4)} ${p.up}</text><text class="ilab" style="fill:var(--s-mus)" x="${x0+p.P*sc+8}" y="${(y0+Y(Q))/2}">Q = ${+Q.toPrecision(4)} ${p.uq}</text><text class="ilab" x="${x0+p.P*sc*.38}" y="${(y0+Y(Q))/2-12}" text-anchor="end">S = ${+S.toPrecision(4)}</text><text class="tx" x="${x0+44}" y="${y0-(Q>=0?8:-18)}">θ = ${(th*180/Math.PI).toFixed(1)}°</text>`;
+    s+=`<text class="ilab" style="fill:var(--s-ok)" x="${x0+p.P*sc/2}" y="${y0+(p.Q>=0?22:-10)}" text-anchor="middle">P = ${+p.P.toPrecision(4)} ${p.up}</text><text class="ilab" style="fill:var(--s-mus)" x="${x0+p.P*sc+8}" y="${(y0+Y(Q))/2}">Q = ${+Q.toPrecision(4)} ${p.uq}</text><text class="ilab" x="${x0+p.P*sc*.42}" y="${(y0+Y(Q))/2+(Q>=0?-14:26)}" text-anchor="end">S = ${+S.toPrecision(4)} ∠ ${(th*180/Math.PI).toFixed(1)}°</text>`;
     svg.innerHTML=s;const tq=p.P*Math.tan(Math.acos(p.target));set('s',+S.toPrecision(4)+' '+p.us);set('pf',pf.toFixed(3)+(Q>1e-9?' lag':Q<-1e-9?' lead':' (unity)'));set('i',p.V?+(S*p.k/p.V).toPrecision(4)+' A':'—');set('qc',+(p.Q-tq).toPrecision(4)+' '+p.uq)}
   bindChips(v.top,i=>{cur=i;build()});build()};
 
